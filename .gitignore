@@ -1,0 +1,17 @@
+# Dependency directories
+node_modules/
+
+# dotenv environment variables file
+.env
+
+# vim tags archive
+tags
+
+# Osx garbage
+.DS_Store
+
+# testing
+.nyc_output/
+coverage/
+.scannerwork
+dump.rdb
