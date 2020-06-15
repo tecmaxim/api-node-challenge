@@ -26,3 +26,28 @@ connection.connect(async (err) => {
 });
 
 module.exports.conector = connection;
+
+const transaction = async (pool, callback) => {
+
+  const connection = await pool.getConnection();
+  await connection.beginTransaction();
+
+  try {
+
+    await callback(connection);
+    await connection.commit();
+
+  } catch (err) {
+
+    await connection.rollback();
+    // Throw the error again so others can catch it.
+    throw err;
+
+  } finally {
+
+    connection.release();
+
+  }
+
+
+}

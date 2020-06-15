@@ -1,4 +1,4 @@
-const connection = require('../../db/conector.js');
+const connection = require('../../db/connector.js');
 
 /**
  *  Save student submited
