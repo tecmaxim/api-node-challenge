@@ -7,7 +7,7 @@ CREATE TABLE `students` (
   `idStudent` int(10) NOT NULL AUTO_INCREMENT,
   `name` varchar(100) NOT NULL,
   `email` varchar(100) NOT NULL,
-  `caereer` varchar(200) DEFAULT NULL,
+  `career` varchar(200) DEFAULT NULL,
   `birthday` date NOT NULL,
   `phone` int unsigned DEFAULT NULL,
   `country` varchar(100) NOT NULL,
@@ -27,9 +27,9 @@ CREATE TABLE `payment_methods` (
   KEY `payment_methods_description_IDX` (`description`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
--- students_storage.students_paymets_option definition
+-- students_storage.students_paymets_method definition
 
-CREATE TABLE `students_paymets_option` (
+CREATE TABLE `students_paymets_method` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `idStudent` int(10) NOT NULL,
   `idPayment` int(10) NOT NULL,

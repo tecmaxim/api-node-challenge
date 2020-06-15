@@ -1,19 +1,18 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-//Controllers
+// Controllers
 const studentController = require('./src/controllers/studentCtl');
-const paymentController = require('./src/controllers/paymentCtl');
 
-//express
+// express
 const app = express();
 const router = express.Router();
 
-//healtCheck
+// healtCheck
 router.get('/health-check', async (req, res) => {
   const result = {
     status: 'OK',
     timestamp: Number(new Date()),
-    params: req.query,
+    params: req.query
   };
 
   res.json(result);
@@ -30,8 +29,9 @@ router.get('/student/:id', (req, res) => {
 });
 
 // INSERT An Student
-router.post('/student', (req, res) => {
-  // ToDo
+router.post('/student', async (req, res) => {
+  const result = await studentController.save(req.body);
+  res.json(result);
 });
 
 // Update student
@@ -41,7 +41,7 @@ router.put('/student/:id', (req, res) => {
 
 // DELETE An Student
 router.delete('/student/:id', (req, res) => {
- // ToDo
+  // ToDo
 });
 
 app.use(bodyParser.json());
