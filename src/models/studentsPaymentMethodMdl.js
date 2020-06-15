@@ -5,26 +5,49 @@ const connection = require('../../db/connector.js');
  * @param {object} params
  * @returns {object}
  */
-const save = async (params) => {
-  const query = `
-    INSERT INTO students_payment_method VALUES
-    (?,?,?);`;
+const store = async (params) => {
+  console.log('estoy en payment');
+  const query = 'INSERT INTO students_payment_method SET ?';
 
   // Save data
   connection.query(
     query,
     params,
-    (error, result) => {
-      if (error) {
-        throw error;
+    (err, result) => {
+      if (!err) {
+        return {
+          status: 200,
+          id: result.insertId
+        };
+      }
+      console.error(`[DEBUG]:[PaymentMethod] ${JSON.stringify(err)}`);
+    }
+  );
+};
+
+module.exports.store = store;
+
+const update = async (data, id) => {
+  let status = 200;
+  const query = `UPDATE students_payment_method SET ?
+   WHERE idStudent = ${id}`;
+
+  // Save data
+  connection.query(
+    query,
+    data,
+    (err, result) => {
+      if (err) {
+        status = 500;
+        console.error(`[DEBUG]:[PaymentMethod] ${JSON.stringify(err)}`);
       }
 
       return {
-        status: 200,
+        status,
         id: result.insertId
       };
     }
   );
 };
 
-module.exports.save = save;
+module.exports.update = update;

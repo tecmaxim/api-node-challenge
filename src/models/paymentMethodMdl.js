@@ -2,9 +2,7 @@ const connection = require('../../db/connector.js');
 
 const store = async (params) => {
   // const { idStudent, idPayment, installments } = params;
-  const query = `
-    INSERT INTO students_payment_method VALUES
-    (?,?,?,?,?,?,?);`;
+  const query = 'INSERT INTO students_payment_method SET ?';
 
   connection.query(
     query,
@@ -16,7 +14,7 @@ const store = async (params) => {
           id: res.insertId
         };
       }
-      console.log(err);
+      console.error(`[DEBUG]:[PaymentMethod] ${JSON.stringify(err)}`);
       throw err;
     }
   );

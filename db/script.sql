@@ -22,7 +22,6 @@ CREATE TABLE `students` (
 CREATE TABLE `payment_methods` (
   `id` int(10) NOT NULL AUTO_INCREMENT,
   `description` varchar(100) NOT NULL,
-  `installments` INT(2) unsigned NOT NULL,
   PRIMARY KEY (`id`),
   KEY `payment_methods_description_IDX` (`description`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -33,6 +32,7 @@ CREATE TABLE `students_paymets_method` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `idStudent` int(10) NOT NULL,
   `idPayment` int(10) NOT NULL,
+  `installments` INT(2) unsigned NOT NULL,
   PRIMARY KEY (`id`),
   KEY `students_paymets_option_fk_students` (`idStudent`),
   KEY `students_paymets_option_FK_payments_methods` (`idPayment`),

@@ -15,7 +15,6 @@ const connection = mysql.createConnection({
   multipleStatements: true
 });
 
-
 connection.connect(async (err) => {
   if (err) {
     console.error(`[CRITICAL]: DB CONECTION CRASHED: ${JSON.stringify(err)}`);
@@ -24,30 +23,21 @@ connection.connect(async (err) => {
     console.log('[DEBUG]: DB CONNECTED');
   }
 });
-
-module.exports.conector = connection;
+module.exports = connection;
 
 const transaction = async (pool, callback) => {
 
   const connection = await pool.getConnection();
   await connection.beginTransaction();
-
   try {
-
     await callback(connection);
     await connection.commit();
-
   } catch (err) {
-
     await connection.rollback();
     // Throw the error again so others can catch it.
     throw err;
-
   } finally {
-
     connection.release();
-
   }
-
-
-}
+};
+module.exports.transaction = transaction;

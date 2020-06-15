@@ -1,56 +1,137 @@
-const connection = require('../../db/conector.js');
-const paymentMethodsMdl = require('../models/paymentMethodMdl.js');
+const connection = require('../../db/connector.js');
+const studentsPaymentMethodMdl = require('../models/studentsPaymentMethodMdl.js');
 
 const store = async (params) => {
-  const query = `
-    INSERT INTO students VALUES
-    (?,?,?,?,?,?,?);`;
+  let status;
+  const query = 'INSERT INTO students SET ?';
 
-  /* Begin transaction */
+  // Begin transaction
   connection.beginTransaction((error) => {
-    if (error) { throw error; }
-    connection.query(
-      query,
-      params,
-      (err, result) => {
-        if (err) {
-          connection.rollback(() => {
-            throw error;
-          });
-        }
+    const { student } = params;
+    const { paymentMethod } = params;
 
-        // Set data of payment
-        const dataPayment = {
-          IdStudent: result.insertId,
-          idPayment: params.payment.idPayment,
-          installments: params.payment.installments
-        };
-        // Save data of payment
-        const paymentResult = paymentMethodsMdl.store(dataPayment);
-        // If fail rollback
-        if (paymentResult.status === 500) {
-          connection.rollback(() => {
-            throw error;
-          });
-        }
-        // If all data is stored successfully, commit.
-        connection.commit((errCommit) => {
-          if (err) {
+    try {
+      connection.query(
+        query,
+        student,
+        async (e, result) => {
+          if (e) {
+            console.error(`[DEBUG]: ${JSON.stringify(e)}`);
             connection.rollback(() => {
-              throw errCommit;
+              throw e;
             });
+            status = 500;
           }
-          console.log('Transaction Complete.');
-          connection.end();
+
+          // Set data of payment
+          const dataPayment = {
+            IdStudent: result.insertId,
+            idPayment: paymentMethod.id,
+            installments: paymentMethod.installments
+          };
+          console.log(dataPayment);
+          // Save data of payment
+          try {
+            const paymentResult = await studentsPaymentMethodMdl.store(dataPayment);
+            // If fail rollback
+            console.log(paymentResult);
+          } catch (ePayment) {
+            connection.rollback(() => {
+              throw ePayment;
+            });
+            status = 500;
+          }
+
+          // If all data is stored successfully, commit.
+          connection.commit((errCommit) => {
+            if (errCommit) {
+              connection.rollback(() => {
+                throw errCommit;
+              });
+              status = 500;
+            }
+            console.log('Transaction Complete.');
+            connection.end();
+          });
 
           return {
-            status: 200,
+            status,
             id: result.insertId
           };
-        });
-      }
-    );
+        }
+      );
+    } catch (errorQuery) {
+      console.error(`[ERROR]: FAIL QUERY ${JSON.stringify(errorQuery)}`);
+      throw errorQuery;
+    }
   });
 };
 
 module.exports.store = store;
+
+const update = async (data, id) => {
+  let status;
+  const query = `UPDATE students SET ? WHERE idStudent = ${id}`;
+
+  // Begin transaction
+  connection.beginTransaction((error) => {
+    const { student } = data;
+    const { paymentMethod } = data;
+
+    try {
+      connection.query(
+        query,
+        student,
+        async (e, result) => {
+          if (e) {
+            console.error(`[DEBUG]: ${JSON.stringify(e)}`);
+            connection.rollback(() => {
+              throw e;
+            });
+            status = 500;
+          }
+
+          // Set data of payment
+          const dataPayment = {
+            idPayment: paymentMethod.id,
+            installments: paymentMethod.installments
+          };
+          console.log(dataPayment);
+          // Save data of payment
+          try {
+            const paymentResult = await studentsPaymentMethodMdl.update(dataPayment, id);
+            // If fail rollback
+            console.log(paymentResult);
+          } catch (ePayment) {
+            connection.rollback(() => {
+              throw ePayment;
+            });
+            status = 500;
+          }
+
+          // If all data is stored successfully, commit.
+          connection.commit((errCommit) => {
+            if (errCommit) {
+              connection.rollback(() => {
+                throw errCommit;
+              });
+              status = 500;
+            }
+            console.log('Transaction Complete.');
+            connection.end();
+          });
+
+          return {
+            status,
+            id: result.insertId
+          };
+        }
+      );
+    } catch (errorQuery) {
+      console.error(`[ERROR]: FAIL QUERY ${JSON.stringify(errorQuery)}`);
+      throw errorQuery;
+    }
+  });
+};
+
+module.exports.update = update;

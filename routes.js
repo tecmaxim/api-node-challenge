@@ -10,12 +10,12 @@ const router = express.Router();
 // healtCheck
 router.get('/health-check', async (req, res) => {
   const result = {
-    status: 'OK',
+    status: 200,
     timestamp: Number(new Date()),
     params: req.query
   };
 
-  res.json(result);
+  res.status(result.status).json(result);
 });
 
 // GET all students
@@ -35,8 +35,9 @@ router.post('/student', async (req, res) => {
 });
 
 // Update student
-router.put('/student/:id', (req, res) => {
-  // ToDo
+router.put('/student/:id', async (req, res) => {
+  const result = await studentController.update(req.body, req.params);
+  res.json(result);
 });
 
 // DELETE An Student
