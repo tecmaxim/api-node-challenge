@@ -1,4 +1,4 @@
-const connection = require('../../db/conector.js');
+const connection = require('../../db/connector.js');
 
 const store = async (params) => {
   // const { idStudent, idPayment, installments } = params;
