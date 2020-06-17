@@ -40,6 +40,7 @@ const update = async (data, id) => {
       if (err) {
         status = 500;
         console.error(`[DEBUG]:[PaymentMethod] ${JSON.stringify(err)}`);
+        throw err;
       }
 
       return {

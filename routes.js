@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 // Controllers
 const studentController = require('./src/controllers/studentCtl');
+const paymentMethodController = require('./src/controllers/paymentMethodCtl');
 
 // express
 const app = express();
@@ -19,32 +20,45 @@ router.get('/health-check', async (req, res) => {
 });
 
 // GET all students
-router.get('/student', (req, res) => {
-  // ToDo
+router.get('/student', async (req, res) => {
+  // Callback response
+  studentController.getAllStudents(req.query, (status, result) => {
+    res.status(status).json(result);
+  });
 });
 
 // GET an student
-router.get('/student/:id', (req, res) => {
-  // ToDo
+router.get('/student/:id', async (req, res) => {
+  studentController.getOneStudent(req.params, (status, result) => {
+    res.status(status).json(result);
+  });
 });
 
 // INSERT An Student
 router.post('/student', async (req, res) => {
   const result = await studentController.save(req.body);
-  res.json(result);
+  res.status(201).json(result);
 });
 
 // Update student
 router.put('/student/:id', async (req, res) => {
   const result = await studentController.update(req.body, req.params);
-  res.json(result);
+  res.status(202).json(result);
 });
 
 // DELETE An Student
-router.delete('/student/:id', (req, res) => {
-  // ToDo
+router.delete('/student/:id', async (req, res) => {
+  const result = await studentController.deleteStudent(req.params);
+  res.status(204).json(result);
 });
 
+// Get all payments availables
+router.get('/payment', async (req, res) => {
+  // Callback Response
+  paymentMethodController.getPaymentMethods((status, result) => {
+    res.status(status).json(result);
+  });
+});
 app.use(bodyParser.json());
 app.use('/api/v1', router);
 
