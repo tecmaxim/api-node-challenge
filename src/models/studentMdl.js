@@ -18,7 +18,7 @@ const getAll = (criteria, offset = null, callback) => {
     ${STUDENT_SELECT}
     INNER JOIN students_payment_method SP ON S.idStudent=SP.idStudent
     INNER JOIN payment_methods PM ON PM.id = SP.idPayment
-    WHERE isActive = 1 AND ${criteria} 
+    WHERE S.isActive = 1 AND ${criteria} 
     LIMIT ${LIMIT_DEFAULT} 
     ${offset !== null ? `OFFSET =${offset}` : ''}
     `;
