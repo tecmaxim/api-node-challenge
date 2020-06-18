@@ -1,7 +1,7 @@
 module.exports = {
   extends: 'airbnb',
   parserOptions: {
-    ecmaVersion: 8
+    ecmaVersion: 7
   },
   rules: {
     'comma-dangle': ['error', 'never'],
