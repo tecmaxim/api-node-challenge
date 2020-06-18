@@ -1,4 +1,5 @@
 const studentMdl = require('../models/studentMdl');
+const studPayment = require('../models/studentsPaymentMethodMdl.js')
 // const paymentMethodCtl = require('../models/paymentMethodMdl');
 
 const save = async (studentData) => {
@@ -66,11 +67,19 @@ const getAllStudents = (queryParams, responseCallback) => {
 module.exports.getAllStudents = getAllStudents;
 
 const getOneStudent = async (student, responseCallback) => {
+  let final; 
   try {
     // Callback response from mysql.query component
-    return studentMdl.getOne(student.id, (studentFound) => {
+    studentMdl.getOne(student.id, (err, studentFound) => {
       // response is:(status, data)
-      responseCallback(200, studentFound);
+      console.log(studentFound[0].id);
+      studPayment.getOne(studentFound[0].id, (result) => {
+        final = { studnet: studentFound[0]}
+        final.studnet.paymentMethod= result;
+
+        responseCallback(200, final);
+      })
+
     });
   } catch (err) {
     responseCallback({

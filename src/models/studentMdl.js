@@ -4,7 +4,7 @@ const studentsPaymentMethodMdl = require('../models/studentsPaymentMethodMdl.js'
 const { LIMIT_DEFAULT } = process.env;
 
 const STUDENT_SELECT = `SELECT 
-S.idStudent,
+S.idStudent as id,
 S.name,
 S.email,
 S.career,
@@ -40,9 +40,14 @@ module.exports.getAll = getAll;
 
 const getOne = (id, callback) => {
   const query = `
-    ${STUDENT_SELECT}
-    INNER JOIN students_payment_method SP ON S.idStudent=SP.idStudent
-    INNER JOIN payment_methods PM ON PM.id = SP.idPayment
+  SELECT 
+  S.idStudent as id,
+  S.name,
+  S.email,
+  S.career,
+  S.phone,
+  S.birthday,
+  S.country FROM students S 
     WHERE S.idStudent=${id} AND S.isActive = 1`;
 
   connection.query(
@@ -52,7 +57,7 @@ const getOne = (id, callback) => {
         console.error(`[ERROR]:[GET ONE] ${JSON.stringify(err)}`);
         throw err;
       }
-      callback(student);
+      callback(err, student);
     }
   );
 };

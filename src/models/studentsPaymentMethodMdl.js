@@ -52,3 +52,22 @@ const update = async (data, id) => {
 };
 
 module.exports.update = update;
+
+const getOne = async (id, callback) => {
+  const query = `SELECT S.id as id, S.description, SP.installments  FROM payment_methods S
+  INNER JOIN students_payment_method SP ON S.id=SP.idPayment
+  WHERE SP.idStudent = ${id} 
+  `;
+  connection.query(
+    query,
+    (err, rows) => {
+      if (err) {
+        console.error(`[ERROR]:  ${JSON.stringify(err)}`);
+        throw err;
+      }
+      console.log(`[DEBUG]: DATA : ${JSON.stringify(rows)}`);
+      callback(rows);
+    }
+  );
+};
+module.exports.getOne = getOne;
