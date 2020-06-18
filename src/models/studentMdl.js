@@ -4,6 +4,7 @@ const studentsPaymentMethodMdl = require('../models/studentsPaymentMethodMdl.js'
 const { LIMIT_DEFAULT } = process.env;
 
 const STUDENT_SELECT = `SELECT 
+S.idStudent,
 S.name,
 S.email,
 S.career,
@@ -42,7 +43,7 @@ const getOne = (id, callback) => {
     ${STUDENT_SELECT}
     INNER JOIN students_payment_method SP ON S.idStudent=SP.idStudent
     INNER JOIN payment_methods PM ON PM.id = SP.idPayment
-    WHERE S.idStudent=${id} AND isActive = 1`;
+    WHERE S.idStudent=${id} AND S.isActive = 1`;
 
   connection.query(
     query,
